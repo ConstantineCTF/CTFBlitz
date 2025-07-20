@@ -17,7 +17,7 @@ from modules.hint_decoder import run_hint_decoder
 colorama.init()
 
 # Theme configuration (customizable: Hacker Green, Cyber Blue, Red Team)
-theme = "Hacker Green"  # Change to "Cyber Blue" or "Red Team"
+theme = "Red Team"  # Changed to Red Team for that hacker flair
 THEMES = {
     "Hacker Green": {"menu": Fore.CYAN, "success": Fore.GREEN, "error": Fore.RED, "input": Fore.YELLOW},
     "Cyber Blue": {"menu": Fore.BLUE, "success": Fore.CYAN, "error": Fore.MAGENTA, "input": Fore.WHITE},
@@ -151,12 +151,17 @@ def main():
             username_field = config.get("username_field", input(f"{colors['input']}Enter username field (e.g., username): {Style.RESET_ALL}")).strip()
             password_field = config.get("password_field", input(f"{colors['input']}Enter password field (e.g., password): {Style.RESET_ALL}")).strip()
             username_file = config.get("username_file", input(f"{colors['input']}Enter username file (e.g., data/usernames.txt): {Style.RESET_ALL}")).strip()
+            password_file = config.get("password_file", "data/ctf_creds.txt" if global_mode == "Normal" else input(f"{colors['input']}Enter password file (e.g., data/rockyou_small.txt): {Style.RESET_ALL}")).strip()
             if not os.path.exists(username_file):
                 print(f"{colors['error']}[-] Username file not found!{Style.RESET_ALL}")
                 log_action(f"Username file not found: {username_file}")
                 continue
-            config.update({"brute_url": url, "username_field": username_field, "password_field": password_field, "username_file": username_file})
-            result = run_brute_force(url, username_field, password_field, username_file, global_mode, stealth_mode, colors)
+            if not os.path.exists(password_file):
+                print(f"{colors['error']}[-] Password file not found!{Style.RESET_ALL}")
+                log_action(f"Password file not found: {password_file}")
+                continue
+            config.update({"brute_url": url, "username_field": username_field, "password_field": password_field, "username_file": username_file, "password_file": password_file})
+            result = run_brute_force(url, username_field, password_field, username_file, password_file, global_mode, stealth_mode, colors)
             save_results("Mega Brute-Forcer", result)
             print(f"{colors['success']}{result}{Style.RESET_ALL}")
         elif choice == "4":
