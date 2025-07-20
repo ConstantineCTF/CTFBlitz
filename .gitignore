@@ -1,0 +1,7 @@
+# Ignore sensitive CTFBlitz files
+data/ctf_results.json
+data/config.json
+data/ctf_log.txt
+# Ignore Python cache
+__pycache__/
+*.pyc
